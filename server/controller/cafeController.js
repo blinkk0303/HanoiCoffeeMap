@@ -18,7 +18,7 @@ export const getCafes = catchAsync(async (req, res) => {
 });
 
 
-export const getCafeById = catchAsync(async (req, res) => {
+export const getCafeById = catchAsync(async (req, res,next) => {
         const result = await cafeModel.findCafeById(req.params.id);
         if(!result){
             return next(new AppError("Không tìm thấy quán cafe",404))
@@ -47,7 +47,7 @@ export const createCafe = catchAsync(async (req,res) => {
 });
 // ===============================================
 //PUT
-export const updateCafe = catchAsync(async (req,res) =>{
+export const updateCafe = catchAsync(async (req,res,next) =>{
         const { id } = req.params;
         const cafe = await cafeService.updateCafe(id, req.body);
 

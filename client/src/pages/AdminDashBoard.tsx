@@ -1,8 +1,10 @@
+import Logout from '@/components/auth/Logout'
 import React from 'react'
 
 const AdminDashBoard = () => {
+  
   return (
-    <div>AdminDashBoard</div>
+    <Logout />
   )
 }
 

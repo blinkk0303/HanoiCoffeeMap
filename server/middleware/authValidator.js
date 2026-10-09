@@ -7,13 +7,13 @@ export const registerValidation = [
     .isEmail().withMessage('Email không đúng định dạng')
     .normalizeEmail(),
 
-  body('password')
+  body('password_hash')
     .notEmpty().withMessage('Password là bắt buộc')
     .isLength({ min: 8 }).withMessage('Password phải có ít nhất 8 ký tự')
     .matches(/\d/).withMessage('Password phải chứa ít nhất 1 chữ số')
     .matches(/[A-Za-z]/).withMessage('Password phải chứa ít nhất 1 chữ cái'),
 
-  body('name')
+  body('full_name')
     .trim()
     .notEmpty().withMessage('Tên là bắt buộc')
     .isLength({ min: 2, max: 100 }).withMessage('Tên phải từ 2-100 ký tự'),
@@ -26,8 +26,11 @@ export const loginValidation = [
     .isEmail().withMessage('Email không đúng định dạng')
     .normalizeEmail(),
 
-  body('password')
-    .notEmpty().withMessage('Password là bắt buộc'),
+  body('password_hash')
+    .notEmpty().withMessage('Password là bắt buộc')
+    .isLength({ min: 8 }).withMessage('Password phải có ít nhất 8 ký tự')
+    .matches(/\d/).withMessage('Password phải chứa ít nhất 1 chữ số')
+    .matches(/[A-Za-z]/).withMessage('Password phải chứa ít nhất 1 chữ cái'),
 ];
 
 // Middleware kiểm tra kết quả validate, dùng chung cho mọi route

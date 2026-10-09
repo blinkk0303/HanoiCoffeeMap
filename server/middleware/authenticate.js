@@ -2,8 +2,8 @@ import jwt from "../utils/jwt.js"
 // verify token
 
 export const authenticate = async(req,res,next) => {
-    const authHeader = req.header.authorization;
-    const token = authHeader && authHeader.split('')[1]; // Bearer <token>
+    const authHeader = req.headers.authorization;
+    const token = authHeader?.startsWith('Bearer ') ? authHeader.split(' ')[1] : null; // Bearer <token>
 
     if(!token){
         return res.status(401).json({
@@ -12,7 +12,7 @@ export const authenticate = async(req,res,next) => {
     }
     try{
         const decoded = jwt.verifyToken(token); 
-        req.user = decoded; // {userId, role. iat, exp}
+        req.user = decoded; // {id, role. iat, exp}
         next();
     }catch(error){
         return res.status(401).json({

@@ -22,7 +22,7 @@ export const createUser = catchAsync(async(req,res) => {
         })
 });
 
-export const updateUser =catchAsync (async(req,res) => {
+export const updateUser =catchAsync (async(req,res,next) => {
         const {email, password_hash,full_name, phone, avatar_url, role, is_active} = req.body;
         const user = await UserModel.updateUser(req.params.id, {email, password_hash,full_name, phone, avatar_url, role, is_active});
         if(!user){
@@ -35,7 +35,7 @@ export const updateUser =catchAsync (async(req,res) => {
         })
 });
 
-export const deleteUser = catchAsync(async(req,res) => {
+export const deleteUser = catchAsync(async(req,res,next) => {
         const user = await UserModel.deleteUser(req.params.id);
         if(!user){
             return next(new AppError("Không tìm thấy người dùng",404))
