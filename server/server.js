@@ -5,6 +5,7 @@ import cafeRoutes from "./routes/cafes.js";
 import userRoutes from "./routes/user.js";
 import authRoute from "./routes/auth.js"
 import errorHandler from './middleware/errorHandler.js';
+import 'dotenv/config';
 
 dotenv.config();
 const app = express();

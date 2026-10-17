@@ -12,7 +12,7 @@ export const authenticate = async(req,res,next) => {
     }
     try{
         const decoded = jwt.verifyToken(token); 
-        req.user = decoded; // {id, role. iat, exp}
+        req.user = decoded; //payload: {id, role. iat, exp}
         next();
     }catch(error){
         return res.status(401).json({

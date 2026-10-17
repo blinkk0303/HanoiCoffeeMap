@@ -43,7 +43,7 @@ export const signIn = catchAsync(async(req,res,next) => {
             return next(new AppError("Email hoặc mật khẩu không đúng ",401));
         }
         const accessToken = jwt.generateToken({
-            userId: user.id, role: user.role
+            userId: user.id, role: user.role,authAt: Math.floor(Date.now() / 1000) //payload 
         })
 
         //khong tra password ve client 
@@ -80,3 +80,25 @@ export const getCurrentUser = catchAsync(async(req,res,next) => {
         user
     });
 });
+
+export const refreshToken = catchAsync(async(req,res,next) => {
+    const MAX_SESSION_SECONDS = 30 * 24 * 60 * 60; 
+    const {userId,authAt} = req.user;
+    const now = Math.floor(Date.now() / 1000);
+
+    if(!authAt || now - authAt > MAX_SESSION_SECONDS){
+        return next(new AppError("Phiên đã hết hạn, vui lòng đăng nhập lại",401));
+    }
+
+    const user = await UserModel.findUserById(userId);
+    if(!user){
+        return next(new AppError("Tài khoản không tồn tại",401));
+    }
+
+    const newAccessToken = jwt.generateToken({userId: user.id, role: user.role,authAt});
+    const { password_hash: _, ...safeUser } = user;
+    return res.json({
+        newAccessToken,
+        user: safeUser
+    })
+})

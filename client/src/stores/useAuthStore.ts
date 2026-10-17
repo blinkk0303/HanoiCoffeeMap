@@ -1,12 +1,18 @@
 import {create} from 'zustand';
+import { persist } from "zustand/middleware"
 import {toast} from 'sonner';
 import {authService} from '../service/authService';
 import type { AuthState } from '../types/store';
 
-export const useAuthStore = create<AuthState>((set,get) => ({
-    accessToken: null,
-    user: null,
-    loading: false,
+// Nhiều request song song chỉ refresh một lần
+let refreshPromise: Promise<string> | null = null;
+
+export const useAuthStore = create<AuthState>()(
+  persist(
+    (set, get) => ({
+      accessToken: null,
+      user: null,
+      loading: false,
     
     // Hàm để xóa trạng thái đăng nhập => clear toàn bộ state
     clearState: () => {
@@ -79,5 +85,23 @@ export const useAuthStore = create<AuthState>((set,get) => ({
             toast.error('Lỗi xảy ra khi lấy thông tin người dùng, vui lòng thử lại');
             return false;
         }
+    },
+    refresh: async () =>{
+        if(!refreshPromise){
+            refreshPromise = authService
+            .refresh()
+            .then(({accessToken,user}) => {
+                set({accessToken, user});
+                return accessToken;
+            }).finally(() => {
+                refreshPromise = null;
+            });
+        }
+        return refreshPromise;
+    },
+}),
+    {
+        name: 'auth',
+        partialize: (state) => ({accessToken: state.accessToken, user: state.user}),
     }
-}));
+));
