@@ -4,13 +4,12 @@ import { useAuthStore } from '@/stores/useAuthStore';
 
 const MapPage = () => {
   const user = useAuthStore(s => s.user);
-  
   return (
     <div>
-      <Logout />
+      {user && <Logout/>}
+      <a className="nav-link underline " href="/dashboard">Dashboard</a>
       <h1>Map Page</h1>
-      <h1>{user?.fullname}</h1>
-      <p>This is the map page.</p>
+      <h1>Welcome {user? user.full_name : "GUEST"} to our application</h1>
     </div>
   )
 }

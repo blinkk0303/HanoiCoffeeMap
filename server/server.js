@@ -6,6 +6,8 @@ import userRoutes from "./routes/user.js";
 import authRoute from "./routes/auth.js"
 import errorHandler from './middleware/errorHandler.js';
 import 'dotenv/config';
+import authenticate from "./middleware/authenticate.js";
+import requireRole from "./middleware/requireRole.js";
 
 dotenv.config();
 const app = express();
@@ -24,11 +26,16 @@ app.listen(PORT, () => {
     console.log(`Server running on ${PORT}`);
 });
 
-// routes
-app.use("/admin/cafes", cafeRoutes);
-app.use("/admin/users", userRoutes);
 
-//public routes 
+// Admin routes
+app.use("/admin",authenticate,requireRole("ADMIN"));// mọi route bên dưới có /admin này cần signIn+role("ADMIN")
+app.use("/api/admin/cafes", cafeRoutes);
+app.use("/api/admin/users", userRoutes); 
+
+// Public routes
+app.use("/cafes",cafeRoutes)
+
+// Authentication route
 app.use("/api/auth", authRoute)
 
 // Error handler

@@ -31,41 +31,50 @@ const CafeModel = {
 
     // lay thong tin chi tiet cua quan cafe theo id
     async findCafeById(id) {
-        const query = `select c.*,
-        u.full_name AS owner_name,
-        u.email AS owner_email, 
-        u.phone AS owner_phone,
-        -- lay danh sach hinh anh cua quan cafe
-        coalesce (json_agg(distinct json_build_object(
-            'id', ci.id,
-            'image_url', ci.image_url,
-            'is_primary', ci.is_primary,
-            'display_order', ci.display_order
-        )), '[]') AS images,
-        -- lay danh sach tag cua quan cafe
-        coalesce (json_agg(distinct json_build_object(
-            'id', t.id,
-            'name', t.name,
-            'icon', t.icon,
-        )) filter (where t.id IS NOT NULL), '[]') AS tags
-        -- lay menu cua quan cafe
-        coalesce (json_agg(distinct json_build_object(
-            'id', m.id,
-            'category', m.category,
-            'item_name', m.item_name,
-            'price', m.price,
-            'is_available', m.is_available
-        )) filter (where m.id IS NOT NULL), '[]') AS menu_items
-        from cafes c 
-        left join user u ON u.id = c.owner_id
-        left join cafe_images ci ON ci.cafe_id = c.id
-        left join cafe_tags ct ON ct.cafe_id = c.id
-        left join menu m ON m.cafe_id = c.id
-        where c.id = $1
-        group by c.id, u.full_name, u.email, u.phone
-        `
+    const query = `
+        SELECT 
+            c.*,
+            u.full_name AS owner_name,
+            u.email AS owner_email,
+            u.phone AS owner_phone,
+            -- Gom ảnh
+            COALESCE((
+                SELECT json_agg(json_build_object(
+                    'id', ci.id,
+                    'image_url', ci.image_url,
+                    'is_primary', ci.is_primary,
+                    'display_order', ci.display_order
+                ) ORDER BY ci.display_order)
+                FROM cafe_images ci WHERE ci.cafe_id = c.id
+            ), '[]') AS images,
+            -- Gom tags
+            COALESCE((
+                SELECT json_agg(json_build_object(
+                    'id', t.id,
+                    'name', t.name,
+                    'icon', t.icon
+                ))
+                FROM cafe_tags ct
+                JOIN tags t ON t.id = ct.tag_id
+                WHERE ct.cafe_id = c.id
+            ), '[]') AS tags,
+            -- Gom menu
+            COALESCE((
+                SELECT json_agg(json_build_object(
+                    'id', m.id,
+                    'category', m.category,
+                    'item_name', m.item_name,
+                    'price', m.price,
+                    'is_available', m.is_available
+                ))
+                FROM menu_items m WHERE m.cafe_id = c.id
+            ), '[]') AS menu_items
+        FROM cafes c
+        LEFT JOIN users u ON u.id = c.owner_id
+        WHERE c.id = $1;
+    `;
         const result = await pool.query(query, [id]);
-        return result.rows[0] || null
+        return result.rows[0] || null;
     },
 
     // kiem tra slug da ton tai chua => tra ve true/false

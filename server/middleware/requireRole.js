@@ -1,8 +1,8 @@
-// phan quyen theo role admin - user - owner
+// Phân quyền theo role admin - user - owner
 
-function authorize(...allowedRoles){
+export const requireRole = (...allowedRoles) => {
     return (req,res,next) => {
-        if(!req){
+        if(!req.user){
             return res.status(401).json({
                 message: "Chưa xác nhận"
             })
@@ -16,4 +16,4 @@ function authorize(...allowedRoles){
     }
 }
 
-export default authorize;
+export default requireRole;
