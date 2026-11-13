@@ -19,16 +19,21 @@ export const getCafes = catchAsync(async (req, res) => {
 
 
 export const getCafeById = catchAsync(async (req, res,next) => {
-        const result = await cafeModel.findCafeById(req.params.id);
+        const { id } = req.params;  
+        const result = await cafeModel.findCafeById(id,req.body);
         if(!result){
-            return next(new AppError("Không tìm thấy quán cafe",404))
+            return next(new AppError("Không tìm thấy quán cà phê",404))
         }
-        res.json({
+        return res.status(201).json({
             success: true,
-            message: 'Cafe spot found successfully',
+            message: 'Quán cà phê bạn tìm đây',
             data: result
         })
 });
+
+// export const getCafeBySlug = catchAsync(async(req,res,nex) => {
+
+// })
 
 // ===============================================
 //POST
@@ -58,7 +63,7 @@ export const updateCafe = catchAsync(async (req,res,next) =>{
             success: true,
             message: `Cập nhật thông tin quán "${cafe.name}" thành công`,
             data: cafe
-        })
+        });
 });
 // ===============================================
 //DELETE
