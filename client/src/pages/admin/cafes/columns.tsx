@@ -1,6 +1,6 @@
 import { createColumnHelper } from "@tanstack/react-table"
 import { type DataTableFeatures } from "../../../components/data-table-features"
-import { Cafe } from "@/types/cafe"
+import { Cafe,CafeDetail } from "@/types/cafe"
 import { MoreHorizontal } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -15,9 +15,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import RoleBadge from "@/components/common/RoleBadge";
-import StatusBadge from "@/components/common/StatusBadge";
-
+import { Link } from "react-router-dom";
+import { StatusBadge } from "@/components/common/StatusBadge";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -81,10 +80,10 @@ export const columns = columnHelper.columns([
     },
   }),
   columnHelper.accessor("operating_status", {
-    header: "Trạng thái hoạt động",
-    // cell: ({row}) => {
-    //   return <RoleBadge role={row.original.role} />;
-    // }
+    header: "Trạng thái ",
+    cell: ({row}) => {
+      return <StatusBadge status={row.original.operating_status} />;
+    }
   }),
   // columnHelper.accessor("is_active", {
   //   header: "Trạng thái",
@@ -97,7 +96,7 @@ export const columns = columnHelper.columns([
   columnHelper.display({
     id: "actions",
   cell: ({ row }) => {
-    const user = row.original
+    const cafe = row.original
     return (
       <DropdownMenu>
         <DropdownMenuTrigger
@@ -110,8 +109,8 @@ export const columns = columnHelper.columns([
         <DropdownMenuContent align="end">
           <DropdownMenuGroup>
             <DropdownMenuLabel>Thao tác</DropdownMenuLabel>
-            <DropdownMenuItem onClick={() => navigator.clipboard.writeText(user.id)}>
-              Xem chi tiết
+            <DropdownMenuItem>
+              <Link to={`/cafes/${cafe.id}`}>Xem chi tiết</Link>
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />

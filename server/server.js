@@ -34,6 +34,7 @@ app.use("/api/admin/users", userRoutes);
 
 // Public routes
 app.use("/cafes",cafeRoutes)
+app.use("/users",userRoutes)
 
 // Authentication route
 app.use("/api/auth", authRoute)

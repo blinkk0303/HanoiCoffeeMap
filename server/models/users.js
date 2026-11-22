@@ -3,9 +3,9 @@ import pool from '../config/db.js';
 const UserModel = {
 
     // GET =============================================
-    // lay tat ca user 
+    // lay tat ca user [ADMIN]
     async findAllUsers({page = 1, limit = 10}) {
-        const offset = (page -1)* limit;
+        const offset = (page - 1)* limit;
 
         const query = `
             SELECT id, email, full_name, phone, avatar_url, role, is_active, created_at
@@ -30,7 +30,24 @@ const UserModel = {
         }
     },
 
-    // lay thong tin chi tiet cua user theo id
+    // lay thong tin chi tiet cua user - khong can dang nhap[PUBLIC] -> hạn chế các trường hiển thị
+    async findUserPublicById(id){
+        const result = await pool.query(`select id,full_name,avatar_url from users where id =$1`,[id])
+        return result.rows[0] || null;
+    },
+    
+    // Danh sách quán mà user sở hữu - only approved [PUBLIC]
+    async findCafeOwnerId(owner_id,{approval_status = false} = {}){
+        const result = await pool.query(`select id,name,address,approval_status,operating_status from cafes where owner_id = $1
+            AND ($2::boolean = false OR approval_status = 'APPROVED') ORDER BY id DESC`,[owner_id,approval_status]);
+        return result.rows;
+    },
+
+
+    async findUserDetailById(id){
+        const result = await pool.query(`select id,full_name,email,role,phone,avatar_url,created_at,updated_at from users where id = $1`,[id]); 
+        return result.rows[0] || null;
+    },
 
     // =============================================
 
