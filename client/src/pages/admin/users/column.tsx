@@ -15,8 +15,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { Link } from "react-router-dom";
 import RoleBadge from "@/components/common/RoleBadge";
-import StatusBadge from "@/components/common/StatusBadge";
+import {StatusBadge} from "@/components/common/StatusBadge";
 
 
 // This type is used to define the shape of our data.
@@ -96,8 +97,8 @@ export const columns = columnHelper.columns([
         <DropdownMenuContent align="end">
           <DropdownMenuGroup>
             <DropdownMenuLabel>Thao tác</DropdownMenuLabel>
-            <DropdownMenuItem onClick={() => navigator.clipboard.writeText(user.id)}>
-              Xem chi tiết
+            <DropdownMenuItem>
+              <Link to={`/users/${user.id}`}>Xem chi tiết</Link>
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />

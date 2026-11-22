@@ -1,6 +1,6 @@
 import { PaginatedResponse } from '@/types/pagination';
 import api from '../lib/axios';
-import type { Cafe } from '../types/cafe';
+import type { Cafe,CafeDetailResponse } from '../types/cafe';
 
 const BASE = '/admin/cafes';
 export const cafeService = {
@@ -8,8 +8,8 @@ export const cafeService = {
         const response = await api.get<PaginatedResponse<Cafe>>(BASE, { params });
         return response.data;
     },
-    getCafeDetails: async (cafeId: string): Promise<Cafe> => {
-        const res = await api.get<Cafe>(`${BASE}/${cafeId}`);
+    getCafeDetails: async (cafeId: string): Promise<CafeDetailResponse> => {
+        const res = await api.get<CafeDetailResponse>(`${BASE}/${cafeId}`);
         return res.data;
     }
 }

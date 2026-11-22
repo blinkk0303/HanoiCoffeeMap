@@ -10,6 +10,8 @@ import UsersPage from "./pages/admin/users/UsersPage";
 import AdminSidebar from "./components/admin/AdminSidebar";
 import ReviewsPage from "./pages/admin/ReviewsPage";
 import TagsPage from "./pages/admin/TagsPage";
+import CafeDetailPage from "./pages/admin/cafes/CafeDetailPage";
+import UserDetailPage from "./pages/admin/users/UserDetailPage"
 
 function App() {
   return (
@@ -27,7 +29,9 @@ function App() {
             <Route element={<AdminSidebar/>}>
               <Route path="/dashboard" element={<DashBoardPage />} />
               <Route path="/cafes" element={<CafesPage />} />
+              <Route path="/cafes/:id" element={<CafeDetailPage />} />
               <Route path="/users" element={<UsersPage />} />
+              <Route path="/users/:id" element={<UserDetailPage />} />
               <Route path="/reviews" element={<ReviewsPage />} />
               <Route path="/cafe_tags" element={<TagsPage />} />
             </Route>
